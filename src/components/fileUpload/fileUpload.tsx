@@ -1,0 +1,90 @@
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useDropzone } from "react-dropzone";
+import './fileUpload.css';
+
+const baseStyle = {
+    transition: 'border .3s ease-in-out'
+};
+
+const activeStyle = {
+    borderColor: '#2196f3'
+};
+
+const acceptStyle = {
+    borderColor: '#00e676'
+};
+
+const rejectStyle = {
+    borderColor: '#ff1744'
+};
+
+export default function FileUpload() {
+
+    const [files, setFiles] = useState([]);
+
+    const onDrop = useCallback(acceptedFiles => {
+        setFiles(acceptedFiles.map((file:any) => Object.assign(file, {
+            preview: URL.createObjectURL(file)
+        })));
+    }, []);
+
+    const {
+        getRootProps,
+        getInputProps,
+        isDragActive,
+        isDragAccept,
+        isDragReject
+    } = useDropzone({
+        onDrop,
+        accept: 'image/jpeg, image/png, image/jpg, image/svg'
+    });
+
+    const style:any = useMemo(() => ({
+        ...baseStyle,
+        ...(isDragActive? activeStyle: {}),
+        ...(isDragAccept? acceptStyle: {}),
+        ...(isDragReject? rejectStyle: {})
+    }), [
+        isDragActive,
+        isDragReject,
+        isDragAccept
+    ]);
+
+    function removeFile(index:number) {
+        const newFiles = [...files];
+        newFiles.splice(index, 1);
+        setFiles(newFiles);
+    }
+
+    const thumbs = files.map((file:any, index:number) => (
+        <div key={file.name} className="flex flex-col justify-center items-center bg-zinc-100 border-dashed border-2 border-zinc-300 rounded-lg m-2 p-4">
+            <img src={file.preview} alt={file.name} className="max-h-32 rounded-lg" />
+            <button className="text-red-600 mt-4" onClick={() => {removeFile(index)}}>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+            </button>
+        </div>
+    ));
+
+    useEffect(() => () => {
+        files.forEach((file:any) => URL.revokeObjectURL(file.preview));
+    }, [files]);
+
+    return (
+        <div className="flex flex-col justify-center">
+            <div {...getRootProps({style})} className="flex flex-1 justify-center mx-14 my-4 bg-zinc-100 border-dashed border-2 border-zinc-300 rounded-lg p-4">
+                <input {...getInputProps()} />
+                <h2 className="font-bold text-zinc-700 font-base">Drag and drop your images here, or click to select images</h2>
+            </div>
+            <div className="flex justify-center items-center mx-14 flex-wrap">
+                {thumbs}
+            </div>
+            <div className="flex justify-center">
+                <button className=" px-6 py-4 mt-4 rounded-lg text-white bg-gradient-to-r from-cyan-500 to-blue-500 uppercase font-bold">
+                    Apply GFP-GAN
+                </button>
+            </div>
+        </div>
+    )
+}
