@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import './fileUpload.css';
@@ -20,6 +21,11 @@ const rejectStyle = {
 };
 
 export default function FileUpload() {
+
+    // const to deal with api loading, error and response
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [gfpGanResult, setGfpGanResult] = useState([]);
 
     // const to store the selected images
     const [files, setFiles] = useState([]);
@@ -54,6 +60,27 @@ export default function FileUpload() {
         isDragReject,
         isDragAccept
     ]);
+
+    // make api call
+    function getHRImages() {
+
+        // create form data to send images to server
+        let formData = new FormData();
+
+        // append each img under the same key so that it goes as an array of files to server
+        files.forEach((elem: any) => {
+            formData.append("image", elem, elem.name);
+        });
+
+        // make the api call finally!
+        axios({
+            url: "https://api.example.com/test",
+            method: "POST",
+            data: formData,
+        })
+        .then((result) => {})
+        .catch((error) => {});
+    }
 
     // to remove a certain selected image
     function removeFile(index:number) {
@@ -96,7 +123,9 @@ export default function FileUpload() {
 
             {/* button to make the api call to the model */}
             <div className="flex justify-center">
-                <button className=" transition ease-in-out delay-150 px-4 py-2 md:px-6 md:py-4 my-4 rounded-lg text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-700 hover:to-blue-700 duration-300 uppercase font-semibold text-sm md:font-bold md:text-base lg:text-lg">
+                <button 
+                    className=" transition ease-in-out delay-150 px-4 py-2 md:px-6 md:py-4 my-4 rounded-lg text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-700 hover:to-blue-700 duration-300 uppercase font-semibold text-sm md:font-bold md:text-base lg:text-lg"
+                    onClick={getHRImages}>
                     Apply GFP-GAN
                 </button>
             </div>
