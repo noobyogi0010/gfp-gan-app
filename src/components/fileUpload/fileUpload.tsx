@@ -74,8 +74,11 @@ export default function FileUpload() {
 
         // make the api call finally!
         axios({
-            url: "https://api.example.com/test",
+            url: "http://192.168.29.226:5000/apply-gfp-gan",
             method: "POST",
+            headers: {
+                "Access-Control-Allow-Origin": "*"
+            },
             data: formData,
         })
         .then((result) => {})
