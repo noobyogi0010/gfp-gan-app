@@ -20,21 +20,31 @@ const rejectStyle = {
     borderColor: '#ff1744'
 };
 
+const baseUrl = " http://192.168.29.226:5000/";
+
 export default function FileUpload() {
 
     // const to deal with api loading, error and response
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [gfpGanResult, setGfpGanResult] = useState([]);
+    let [gfpGanResult, setGfpGanResult] = useState<any[]>([]);
+    // let imgData: any = [];
+    let resData: any = [];
 
     // const to store the selected images
     const [files, setFiles] = useState([]);
+    // const [imgData, setImgData] = useState([]);
 
     // to handle the drop functionality
     const onDrop = useCallback(acceptedFiles => {
-        setFiles(acceptedFiles.map((file:any) => Object.assign(file, {
-            preview: URL.createObjectURL(file)
-        })));
+        setFiles(acceptedFiles.map((file:File) => 
+            Object.assign(file, {
+                preview: URL.createObjectURL(file),
+                // img: blobToBase64(file),
+                img: file
+            })
+        
+        ));
     }, []);
 
     // getting the params from dropzone and initializing the dropzone with allowed file types
@@ -61,28 +71,87 @@ export default function FileUpload() {
         isDragAccept
     ]);
 
-    // make api call
-    function getHRImages() {
+    function blobToBase64(blob: Blob) {
+        return new Promise((resolve, _) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.readAsDataURL(blob);
+        });
+    }
 
-        // create form data to send images to server
-        let formData = new FormData();
+    // make api call
+    /**
+     * TODO: This function utilizes the already built GFP-GAN API created on Hugging Face. Need to explore this in near future.
+     */
+    /*
+     function getHRImages() {
+
+        let imgData: any = [];
 
         // append each img under the same key so that it goes as an array of files to server
-        files.forEach((elem: any) => {
-            formData.append("image", elem, elem.name);
+        files.forEach(async (elem: any, index: number) => {
+            // console.log(elem.img)
+            // imgData.push(await blobToBase64(elem.img));
+            // console.log(await blobToBase64(elem.img))
+            // blobToBase64(elem.img).then((res: any) => {
+            //     console.log(res);
+            //     imgData.push(res);
+            // });
+            imgData.push(elem.img);
+        });
+        const imgRes = await Promise.all(imgData);
+        console.log('>>> hello data ', imgData);
+        console.log('>>> hello res ', imgRes);
+
+        fetch(
+            "https://hf.space/gradioiframe/akhaliq/GFPGAN/api/predict",
+            {
+                method: "POST",
+                body: JSON.stringify({
+                    "data": imgRes
+                }),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }
+        ).then((res:any) => {
+            return res.json();
+        }).then((jsonRes: any) => {
+            console.log('>>>> hurray', jsonRes);
+            resData = jsonRes;
+            // setGfpGanResult(jsonRes.data.map((file:any) => {
+            //     Object.assign(gfpGanResult, {
+            //         ...file
+            //     })
+            // }))
+            // const newData = [...gfpGanResult, jsonRes.data]
+            setGfpGanResult([...jsonRes?.data]);
+        }).finally(() => {
+            console.log('>>> Magic ', gfpGanResult)
+            console.log('>>> Magic no 2  ', resData)
+            console.log('The End');
+        })
+
+    }
+    */
+
+    function applyGfpGan() {
+        let formData = new FormData();
+
+        files.forEach((elem:any, index:number) => {
+            formData.append("img"+index, elem.img);
         });
 
-        // make the api call finally!
         axios({
-            url: "http://192.168.29.226:5000/apply-gfp-gan",
-            method: "POST",
-            headers: {
-                "Access-Control-Allow-Origin": "*"
-            },
+            method: "post",
+            url: baseUrl+"upload",
             data: formData,
+            headers: {"Content-Type": "multipart/form-data"},
+        }).then(res => {
+            console.log(res);
+        }).catch(err => {
+            console.log(err)
         })
-        .then((result) => {})
-        .catch((error) => {});
     }
 
     // to remove a certain selected image
@@ -105,7 +174,13 @@ export default function FileUpload() {
             </button>
         </div>
     ));
-
+    
+    const resG = gfpGanResult?.map((file:any) => (
+                <div>
+                    <img src={file} alt="" />
+                </div>
+            ));
+        
     // to do clean up
     useEffect(() => () => {
         files.forEach((file:any) => URL.revokeObjectURL(file.preview));
@@ -113,6 +188,12 @@ export default function FileUpload() {
 
     return (
         <div className="flex flex-col justify-center">
+            {/* {gfpGanResult.length>0? resG: console.log('>>>', gfpGanResult)} */}
+            { 
+                gfpGanResult.length>0 ?
+                    resG :
+                    console.log('>>>> nope')
+            }
             {/* dropzone section */}
             <div {...getRootProps({style})} className="flex flex-1 justify-center mx-14 my-4 bg-zinc-100 border-dashed border-2 border-zinc-300 rounded-lg p-4">
                 <input {...getInputProps()} />
@@ -128,7 +209,7 @@ export default function FileUpload() {
             <div className="flex justify-center">
                 <button 
                     className=" transition ease-in-out delay-150 px-4 py-2 md:px-6 md:py-4 my-4 rounded-lg text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-700 hover:to-blue-700 duration-300 uppercase font-semibold text-sm md:font-bold md:text-base lg:text-lg"
-                    onClick={getHRImages}>
+                    onClick={applyGfpGan}>
                     Apply GFP-GAN
                 </button>
             </div>
