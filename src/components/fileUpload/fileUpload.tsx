@@ -56,7 +56,8 @@ export default function FileUpload() {
         isDragReject
     } = useDropzone({
         onDrop,
-        accept: 'image/jpeg, image/png, image/jpg, image/svg'
+        accept: 'image/jpeg, image/png, image/jpg, image/svg',
+        maxFiles: 3,
     });
 
     // applying styles to different events of dropzone
@@ -147,8 +148,16 @@ export default function FileUpload() {
             url: baseUrl+"upload",
             data: formData,
             headers: {"Content-Type": "multipart/form-data"},
-        }).then(res => {
-            console.log(res);
+        })
+        // .then(resp => {
+        //     return resp.json()
+        // })
+        .then((res:any) => {
+            // console.log('>>>> ', res);
+            const restoredImgs = res?.data;
+            console.log('>>> res = ', restoredImgs);
+            setGfpGanResult([...res?.data]);
+            console.log(gfpGanResult);
         }).catch(err => {
             console.log(err)
         })
@@ -159,6 +168,15 @@ export default function FileUpload() {
         const newFiles = [...files];
         newFiles.splice(index, 1);
         setFiles(newFiles);
+    }
+
+    function downloadFile(index:number) {
+        const newFiles = [...gfpGanResult];
+        const src = `data:image/png;base64,`+newFiles[index];
+        const dwnldLink = document.createElement('a');
+        dwnldLink.href = src;
+        dwnldLink.download = `img`+(index+1)+`.png`;
+        dwnldLink.click();
     }
 
     // component to display each selected file
@@ -175,9 +193,18 @@ export default function FileUpload() {
         </div>
     ));
     
-    const resG = gfpGanResult?.map((file:any) => (
-                <div>
-                    <img src={file} alt="" />
+    const resG = gfpGanResult?.map((file:any, index:number) => (
+                <div key={index} className="flex flex-col justify-center items-center mx-14 my-4 flex-wrap bg-zinc-100 border-dashed border-2 border-zinc-300 rounded-lg p-4">
+                    <img src={`data:image/png;base64,`+file.substring(2, file.length-2)} alt={file.name} className="max-h-44 rounded-lg" />
+                    {/* <button className="text-red-600 mt-4" onClick={() => {removeFile(index)}}> */}
+                    <button className="flex px-6 bg-green-600 text-white mt-4 rounded-lg padding-y font-bold text-lg" onClick={() => downloadFile(index)}>
+                        {/* <a href={`data:image/png;base64,`+file.substring(2, 12)} download={`image`+index+`.png`}> */}
+                            Download
+                            <svg xmlns="http://www.w3.org/2000/svg" className="ml-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
+                            </svg>
+                        {/* </a> */}
+                    </button>
                 </div>
             ));
         
@@ -189,11 +216,14 @@ export default function FileUpload() {
     return (
         <div className="flex flex-col justify-center">
             {/* {gfpGanResult.length>0? resG: console.log('>>>', gfpGanResult)} */}
-            { 
+            <div className="flex justify-center items-center mx-14 flex-wrap">
+            {/* { 
                 gfpGanResult.length>0 ?
                     resG :
                     console.log('>>>> nope')
-            }
+            } */}
+                {resG}
+            </div>
             {/* dropzone section */}
             <div {...getRootProps({style})} className="flex flex-1 justify-center mx-14 my-4 bg-zinc-100 border-dashed border-2 border-zinc-300 rounded-lg p-4">
                 <input {...getInputProps()} />
