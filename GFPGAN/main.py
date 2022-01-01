@@ -194,13 +194,13 @@ def applyGfpGan():
     resp = []
     for img in onlyFiles:
         with open(args.save_root+'/restored_imgs/'+img, 'rb') as file:
-            resp.append(base64.b64encode(file.read()))
+            resp.append(str(base64.b64encode(file.read())))
     
     print(onlyFiles)
     print(type(resp))
 
-    return "done"
-    # return json.dumps(resp)
+    # return "done"
+    return jsonify(resp)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
