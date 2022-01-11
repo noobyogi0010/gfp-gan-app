@@ -4,7 +4,7 @@ This is a simple react web app that demonstrates the amazing power of GFP-GAN. T
 
 ## Demo
 
-Coming soon! Stay tuned!!
+![GFP-GAN-App Demo](https://github.com/noobyogi0010/gfp-gan-app/blob/0111/sanity/assets/demo/demo.gif)
 
 ## Local Setup
 
