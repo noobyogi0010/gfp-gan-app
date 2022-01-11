@@ -22,7 +22,8 @@ const rejectStyle = {
 };
 
 // base url of the server
-const baseUrl = " http://192.168.29.226:5000/";
+// const baseUrl = " http://192.168.29.226:8080/";
+const baseUrl = "https://gfp-gan-server-m2zkvmhava-uc.a.run.app/";
 
 export default function FileUpload() {
 
