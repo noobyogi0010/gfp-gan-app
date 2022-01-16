@@ -6,8 +6,6 @@ This is a simple react web app that demonstrates the amazing power of GFP-GAN. T
 
 ![GFP-GAN-App Demo](https://github.com/noobyogi0010/gfp-gan-app/blob/0111/sanity/assets/demo/demo.gif)
 
-Try it out yourself [**here**](https://noobyogi0010.github.io/gfp-gan-app/)
-
 ## Local Setup
 
 You can run the project in your local system using the following commands:
