@@ -21,9 +21,11 @@ const rejectStyle = {
     borderColor: '#ff1744'
 };
 
-// base url of the server
+// base url of the local development server
 // const baseUrl = " http://192.168.29.226:8080/";
-const baseUrl = "https://gfp-gan-server-m2zkvmhava-uc.a.run.app/";
+
+// base url of the development server
+const baseUrl = "https://flask-server-m2zkvmhava-em.a.run.app/";
 
 export default function FileUpload() {
 
