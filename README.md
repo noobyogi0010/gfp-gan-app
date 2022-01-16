@@ -18,6 +18,10 @@ You can run the project in your local system using the following commands:
 
     `npm run start`
 
+## Just FYI...
+
+If you are looking for the api server implementation, then you can find it here: [**GFP-GAN-Server**](https://github.com/noobyogi0010/gfp-gan-server).
+
 ## Future Scope
 
 This can be considered as the base version of this application, as I am planning to develop it further with much more enhancements. As of now following are the things that I have forethought to work upon in the upcoming months:
