@@ -25,7 +25,7 @@ const rejectStyle = {
 // const baseUrl = " http://192.168.29.226:8080/";
 
 // base url of the development server
-const baseUrl = "https://flask-server-m2zkvmhava-em.a.run.app/";
+const baseUrl = "//flask-server-m2zkvmhava-em.a.run.app/";
 
 export default function FileUpload() {
 
