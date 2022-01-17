@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/gfp-gan-app/static/css/main.355cc693.css",
-    "main.js": "/gfp-gan-app/static/js/main.285af570.js",
+    "main.js": "/gfp-gan-app/static/js/main.c0f06de7.js",
     "static/js/787.31a8ef01.chunk.js": "/gfp-gan-app/static/js/787.31a8ef01.chunk.js",
     "index.html": "/gfp-gan-app/index.html",
     "main.355cc693.css.map": "/gfp-gan-app/static/css/main.355cc693.css.map",
-    "main.285af570.js.map": "/gfp-gan-app/static/js/main.285af570.js.map",
+    "main.c0f06de7.js.map": "/gfp-gan-app/static/js/main.c0f06de7.js.map",
     "787.31a8ef01.chunk.js.map": "/gfp-gan-app/static/js/787.31a8ef01.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.355cc693.css",
-    "static/js/main.285af570.js"
+    "static/js/main.c0f06de7.js"
   ]
 }
