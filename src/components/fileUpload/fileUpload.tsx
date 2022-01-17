@@ -18,7 +18,7 @@ const acceptStyle = {
 };
 
 const rejectStyle = {
-    borderColor: '#ff1744'
+    borderColor: '#ff1744' 
 };
 
 // base url of the local development server
