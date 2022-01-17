@@ -22,10 +22,7 @@ const rejectStyle = {
 };
 
 // base url of the local development server
-// const baseUrl = " http://192.168.29.226:8080/";
-
-// base url of the development server
-const baseUrl = "//flask-server-m2zkvmhava-em.a.run.app/";
+const baseUrl = "localhost:8080/";
 
 export default function FileUpload() {
 
@@ -112,6 +109,27 @@ export default function FileUpload() {
     }
 
     /**
+     * Function Name: getImage
+     * Parameters: index (Number)
+     * Description: This function returns the sanitised base64 string to display the image
+     * Return: string
+     */
+    function getImage(index:number): string {
+        // create a copy of existing result array
+        const newFiles = [...gfpGanResult];
+
+        // get the base64 url for the image to be downloaded
+        let src = newFiles[index];
+        if (src.length % 4 !== 0) {
+            let srcPadding = src.length % 4;
+            src = src.substring(0, src.length - srcPadding);
+        }
+        src = `data:image/png;base64,`+src.substring(2, src.length);
+
+        return src;
+    }
+    
+    /**
      * Function Name: removeFile
      * Parameters: index (Number)
      * Description: This function removes the given index value from the files array.
@@ -139,8 +157,13 @@ export default function FileUpload() {
         const newFiles = [...gfpGanResult];
 
         // get the base64 url for the image to be downloaded
-        const src = `data:image/png;base64,`+newFiles[index].substring(2, newFiles[index].length-2);
-
+        let src = newFiles[index];
+        if (src.length % 4 !== 0) {
+            let srcPadding = src.length % 4;
+            src = src.substring(0, src.length - srcPadding);
+        }
+        src = `data:image/png;base64,`+src.substring(2, src.length);
+        
         // create a anchor tag in the dom
         // this anchor tag will be used to download the selected image
         const dwnldLink = document.createElement('a');
@@ -175,7 +198,7 @@ export default function FileUpload() {
     const resG = gfpGanResult?.map((file:any, index:number) => (
                 <div key={index} className="flex flex-col justify-center items-center md:mx-14 my-4 flex-wrap bg-zinc-100 border-dashed border-2 border-zinc-300 rounded-lg p-4">
                     {/* as we are getting base64 string from backend we need to trim the unwanted chars from it and then assign it as src to img tag */}
-                    <img src={`data:image/png;base64,`+file.substring(2, file.length-2)} alt={file.name} className="max-h-32 md:max-h-44 rounded-lg" />
+                    <img src={getImage(index)} alt={file.name} className="max-h-32 md:max-h-44 rounded-lg" />
                     
                     {/* button to download the restored image */}
                     <button className="flex px-4 bg-green-600 text-white mt-4 rounded-lg padding-y font-medium text-sm" onClick={() => downloadFile(index)}>
