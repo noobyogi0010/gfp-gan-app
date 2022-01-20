@@ -22,7 +22,8 @@ const rejectStyle = {
 };
 
 // base url of the local development server
-const baseUrl = "localhost:8080/";
+// const baseUrl = "localhost:8080/";
+const baseUrl = "//new-server-m2zkvmhava-pd.a.run.app/";
 
 export default function FileUpload() {
 
@@ -235,7 +236,7 @@ export default function FileUpload() {
             {/* dropzone section */}
             <div {...getRootProps({style})} className="flex flex-1 justify-center mx-14 my-4 bg-zinc-100 border-dashed border-2 border-zinc-300 rounded-lg p-4">
                 <input {...getInputProps()} />
-                <h2 className="text-center font-semibold text-zinc-500 text-sm">Drag and drop your images here, or click to select images <br /><span className="font-bold">(Max 3 images)</span> </h2>
+                <p className="text-center font-semibold text-zinc-500 text-sm">Drag and drop your images here, or click to select images <br /><span className="font-bold">(Max 3 images)</span> </p>
             </div>
             
             {/* selected images preview section */}
